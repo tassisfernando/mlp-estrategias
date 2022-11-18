@@ -11,7 +11,7 @@ Aplicação do MLP para a base Ecoli, disponível aqui: https://archive.ics.uci.
 Aplicação de 4 estratégias para melhor o desempenho do algoritmo:
 - [x] Normalização: a base já estava normalizada
 - [x] Valor desejado deslocado: deslocando da saída desejada 0 -> 0.005 e 1 -> 0.995;
-- [ ] Erro quadrático;
+- [x] Erro quadrático;
 - [ ] Balanceamento de classes
 
 ### Separação das bases entre Treino e Teste

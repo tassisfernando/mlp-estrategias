@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.System.arraycopy;
+import static java.lang.System.err;
 import static math.MathUtils.UM_DESLOCADO;
 import static math.MathUtils.ZERO_DESLOCADO;
 
@@ -15,16 +16,18 @@ public class MLP {
     private double[][] wh;
     private double[][] wo;
     private double ni;
+    private boolean erroQuad;
 
     private final static double RANGE_MIN = -0.3;
     private final static double RANGE_MAX = 0.3;
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    public MLP(int in, int out, int qtdH, double ni) {
+    public MLP(int in, int out, int qtdH, double ni, boolean erroQuad) {
         this.in = in;
         this.out = out;
         this.qtdH = qtdH;
         this.ni = ni;
+        this.erroQuad = erroQuad;
 
         this.wh = new double[in + 1][qtdH];
         this.wo = new double[qtdH + 1][out];
@@ -72,7 +75,13 @@ public class MLP {
         // Calcula os deltas
         double[] deltaO = new double[out];
         for (int j = 0; j < out; j++) {
-            deltaO[j] = teta[j] * (1 - teta[j]) * (y[j] - teta[j]);
+            double diffOutputTeta = y[j] - teta[j];
+            if (erroQuad) {
+                int sinal = diffOutputTeta > 0 ? 1 : -1;
+                deltaO[j] = teta[j] * (1 - teta[j]) * Math.pow(diffOutputTeta, 2) * sinal;
+            } else {
+                deltaO[j] = teta[j] * (1 - teta[j]) * (diffOutputTeta);
+            }
         }
 
         double[] deltaH = new double[qtdH];

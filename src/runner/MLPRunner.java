@@ -12,6 +12,8 @@ import static utils.FileUtils.*;
 public class MLPRunner {
 
     private static final int N_EPOCAS = 100000;
+    private static final boolean ERRO_QUAD = true;
+
     private static final StringBuilder errosAproxTreino = new StringBuilder();
     private static final StringBuilder errosClassTreino = new StringBuilder();
     private static final StringBuilder errosAproxTeste = new StringBuilder();
@@ -28,7 +30,7 @@ public class MLPRunner {
         double[][][] dataTreino = dataModel.getDataTreino();
         double[][][] dataTeste = dataModel.getDataTeste();
 
-        MLP mlp = new MLP(dataTreino[0][0].length, dataTreino[0][1].length, QTD_H, NI);
+        MLP mlp = new MLP(dataTreino[0][0].length, dataTreino[0][1].length, QTD_H, NI, ERRO_QUAD);
         double erroEpAproxTreino, erroEpClassTreino, erroEpAproxTeste, erroEpClassTeste;
 
         for(int e = 0; e < N_EPOCAS; e++) {
@@ -90,7 +92,11 @@ public class MLPRunner {
     private static double sumErro(double[] y, double[] out) {
         double sum = 0D;
         for(int i = 0; i < y.length; i++) {
-            sum += abs(y[i] - out[i]);
+            if (ERRO_QUAD) {
+                sum += Math.pow(y[i] - out[i], 2);
+            } else {
+                sum += abs(y[i] - out[i]);
+            }
         }
 
         return sum;
