@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static java.lang.System.arraycopy;
+import static math.MathUtils.UM_DESLOCADO;
+import static math.MathUtils.ZERO_DESLOCADO;
 
 public class MLP {
     private int in, out, qtdH;
@@ -55,7 +57,7 @@ public class MLP {
             }
             hiddenOut[h] = MathUtils.sig(u);;
         }
-        hiddenOut[qtdH] = 1;
+        hiddenOut[qtdH] = UM_DESLOCADO;
 
         // calcula a saida obtida
         double[] teta = new double[out];
@@ -114,7 +116,7 @@ public class MLP {
             }
             hiddenOut[h] = MathUtils.sig(u);;
         }
-        hiddenOut[qtdH] = 1;
+        hiddenOut[qtdH] = UM_DESLOCADO;
 
         // calcula a saida obtida
         double[] teta = new double[out];
@@ -140,11 +142,18 @@ public class MLP {
 
     private void generateXArray(double[] xIn, double[] x) {
         arraycopy(xIn, 0, x, 0, xIn.length);
-        x[x.length - 1] = 1D;
+        x[x.length - 1] = UM_DESLOCADO;
     }
 
     public double calculaErroClassificacao(double[] y, double[] out) {
         double[] outTresh = Arrays.stream(out).map(Math::round).toArray();
+        for (int i = 0; i < outTresh.length; i++) {
+            if (outTresh[i] == 1) {
+                outTresh[i] = UM_DESLOCADO;
+            } else {
+                outTresh[i] = ZERO_DESLOCADO;
+            }
+        }
         double soma = 0d;
         for (int i = 0; i < y.length; i++) {
             soma += Math.abs(outTresh[i] - y[i]);

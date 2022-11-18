@@ -7,11 +7,9 @@ import static java.lang.Math.exp;
 
 public class MathUtils {
 
+    public static double ZERO_DESLOCADO = 0.005;
+    public static double UM_DESLOCADO = 0.995;
     public static Double sig(Double u) {
         return 1 / (1 + exp(-u));
-    }
-
-    public static Double round(Double num) {
-        return BigDecimal.valueOf(num).setScale(0, RoundingMode.HALF_UP).doubleValue();
     }
 }
